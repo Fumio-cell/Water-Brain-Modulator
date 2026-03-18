@@ -14,6 +14,8 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     const [isRecording, setIsRecording] = useState(false);
     const [volDepth, setVolDepth] = useState(0.3);
     const [panDepth, setPanDepth] = useState(0.4);
+    const [flowSpeed, setFlowSpeed] = useState(1.0);
+    const [rippleDepth, setRippleDepth] = useState(0.4);
     const [fileName, setFileName] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -76,7 +78,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
             const buffer = await engine.loadAudio(file);
             setAudioBuffer(buffer);
         } catch (err) {
-            alert("ファイルの読み込みに失敗しました。");
+            alert("Failed to load official audio file.");
             console.error(err);
         }
         setIsLoading(false);
@@ -109,7 +111,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                 }
                 return;
             }
-            engine.play(audioBuffer, volDepth, panDepth, recordMode);
+            engine.play(audioBuffer, volDepth, panDepth, flowSpeed, rippleDepth, recordMode);
             setIsPlaying(true);
             setIsRecording(recordMode);
         }
@@ -125,6 +127,18 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
         const val = parseFloat(e.target.value);
         setPanDepth(val);
         engine.setPanDepth(val);
+    };
+
+    const handleFlowSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = parseFloat(e.target.value);
+        setFlowSpeed(val);
+        engine.setFlowSpeed(val);
+    };
+
+    const handleRippleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = parseFloat(e.target.value);
+        setRippleDepth(val);
+        engine.setRippleDepth(val);
     };
 
     return (
@@ -270,6 +284,44 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
                                 <span>Narrow</span>
                                 <span>Oceanic Sweep</span>
+                            </div>
+                        </div>
+
+                        {/* Flow Rate Slider */}
+                        <div className="flex flex-col gap-5">
+                            <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-tighter">
+                                    Flow Rate
+                                </label>
+                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{flowSpeed.toFixed(1)}x</span>
+                            </div>
+                            <input
+                                type="range" min="0.1" max="4" step="0.1"
+                                value={flowSpeed} onChange={handleFlowSpeedChange}
+                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-emerald-400"
+                            />
+                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                                <span>Stagnant</span>
+                                <span>Rapid Current</span>
+                            </div>
+                        </div>
+
+                        {/* Ripple Depth Slider */}
+                        <div className="flex flex-col gap-5">
+                            <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-bold text-amber-400 uppercase tracking-tighter">
+                                    Ripple Intensity
+                                </label>
+                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(rippleDepth * 100).toFixed(0)}%</span>
+                            </div>
+                            <input
+                                type="range" min="0" max="1" step="0.01"
+                                value={rippleDepth} onChange={handleRippleDepthChange}
+                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-amber-400"
+                            />
+                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                                <span>Still</span>
+                                <span>Heavy Refraction</span>
                             </div>
                         </div>
                     </div>

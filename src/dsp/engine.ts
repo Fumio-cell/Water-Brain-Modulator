@@ -5,11 +5,15 @@ export class ModulationEngine {
     // Modulation Nodes
     private volModNode: GainNode | null = null; // Applies the volume modulation
     private panModNode: StereoPannerNode | null = null; // Applies the pan modulation
+    private filterModNode: BiquadFilterNode | null = null; // Low-pass filter for "breathing" effect
+    private rippleModNode: DelayNode | null = null; // NEW: Delay for "ripple" pitch modulation
 
     // Modulator Sources
     private lfoBufferSource: AudioBufferSourceNode | null = null;
     private volDepthNode: GainNode | null = null;
     private panDepthNode: GainNode | null = null;
+    private filterDepthNode: GainNode | null = null; // Maps LFO to filter frequency
+    private rippleDepthNode: GainNode | null = null; // NEW: Maps LFO to delay time
 
     // Output
     private masterGain: GainNode | null = null;
@@ -47,7 +51,7 @@ export class ModulationEngine {
         return audioBuffer;
     }
 
-    public play(buffer: AudioBuffer, volDepth: number = 0.5, panDepth: number = 0.5, startRecording: boolean = false) {
+    public play(buffer: AudioBuffer, volDepth: number = 0.5, panDepth: number = 0.5, flowSpeed: number = 1.0, rippleDepth: number = 0.3, startRecording: boolean = false) {
         if (!this.ctx) return;
         this.stop();
 
@@ -56,12 +60,22 @@ export class ModulationEngine {
         this.sourceNode.buffer = buffer;
         this.sourceNode.loop = true;
 
-        // 2. Processing Chain: Source -> PanNode -> VolNode -> MasterGain
+        // 2. Processing Chain: Source -> Filter -> PanNode -> VolNode -> MasterGain
+        this.filterModNode = this.ctx.createBiquadFilter();
+        this.filterModNode.type = 'lowpass';
+        this.filterModNode.frequency.value = 20000; // Base frequency (fully open)
+        this.filterModNode.Q.value = 4.5; // Significantly higher resonance for more "wah" / liquid character
+
         this.panModNode = this.ctx.createStereoPanner();
         this.volModNode = this.ctx.createGain();
         this.volModNode.gain.value = 1.0;
 
-        this.sourceNode.connect(this.panModNode);
+        this.rippleModNode = this.ctx.createDelay(0.1);
+        this.rippleModNode.delayTime.value = 0.02; // 20ms base delay
+
+        this.sourceNode.connect(this.rippleModNode);
+        this.rippleModNode.connect(this.filterModNode);
+        this.filterModNode.connect(this.panModNode);
         this.panModNode.connect(this.volModNode);
         this.volModNode.connect(this.masterGain!);
 
@@ -84,6 +98,20 @@ export class ModulationEngine {
             splitter.connect(this.panDepthNode, 1);
             this.panDepthNode.connect(this.panModNode.pan);
 
+            // NEW: Connect same LFO 0 (vol) to filter but with different depth
+            this.filterDepthNode = this.ctx.createGain();
+            // Expanded range: map 0..1 LFO to -19500Hz (can pull down to 500Hz)
+            this.filterDepthNode.gain.value = -19500 * volDepth; 
+            splitter.connect(this.filterDepthNode, 0);
+            this.filterDepthNode.connect(this.filterModNode.frequency);
+
+            // NEW: Ripple / Pitch modulation
+            this.rippleDepthNode = this.ctx.createGain();
+            this.rippleDepthNode.gain.value = 0.005 * rippleDepth; // Subtle 5ms max deviation
+            splitter.connect(this.rippleDepthNode, 0);
+            this.rippleDepthNode.connect(this.rippleModNode.delayTime);
+
+            this.lfoBufferSource.playbackRate.value = flowSpeed;
             this.lfoBufferSource.start();
         }
 
@@ -167,6 +195,19 @@ export class ModulationEngine {
     public setMasterVolume(vol: number) {
         if (this.masterGain) {
             this.masterGain.gain.setTargetAtTime(vol, this.ctx!.currentTime, 0.1);
+        }
+    }
+
+    public setFlowSpeed(speed: number) {
+        if (this.lfoBufferSource) {
+            this.lfoBufferSource.playbackRate.setTargetAtTime(speed, this.ctx!.currentTime, 0.1);
+        }
+    }
+
+    public setRippleDepth(depth: number) {
+        if (this.rippleDepthNode) {
+            // Map 0..1 to 0..5ms
+            this.rippleDepthNode.gain.setTargetAtTime(0.005 * depth, this.ctx!.currentTime, 0.1);
         }
     }
 

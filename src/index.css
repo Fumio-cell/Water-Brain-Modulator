@@ -1,6 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Site Theme Colors */
+  --color-brain-bg: #020617;
+  --color-brain-panel: #0f172a;
+  --color-brain-accent: #38bdf8;
+  --color-brain-accent-hover: #7dd3fc;
+  --color-brain-wave: #818cf8;
+  --color-brain-deep: #1e1b4b;
+
+  /* Custom Backgrounds */
+  --image-water-grid: linear-gradient(to right, #ffffff05 1px, transparent 1px), 
+                      linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+  
+  /* Animations */
+  --animate-wave-slow: wave 20s linear infinite;
+
+  @keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
 
 :root {
   color-scheme: dark;
@@ -8,7 +28,10 @@
 
 body {
   margin: 0;
-  overflow: hidden; /* App takes full screen, no scroll on body */
+  background-color: #020617; /* Matches brain-bg */
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
 }
 
 #root {
@@ -16,4 +39,11 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Custom UI Utils for Water Brain Modulator */
+@layer utilities {
+  .glass-panel {
+    @apply bg-brain-panel/50 backdrop-blur-xl border border-white/5;
+  }
 }

@@ -7,7 +7,10 @@ export const Header: React.FC = () => {
     const [isPro, setIsPro] = useState(false);
 
     useEffect(() => {
+        if (!supabase) return;
+
         supabase.auth.getUser().then(({ data: { user: foundUser } }) => {
+            if (!supabase) return;
             setUser(foundUser);
             if (foundUser) {
                 supabase
@@ -24,6 +27,7 @@ export const Header: React.FC = () => {
         });
 
         const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            if (!supabase) return;
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
@@ -45,13 +49,13 @@ export const Header: React.FC = () => {
         window.addEventListener('app:buyPro', handleBuyPro);
 
         return () => {
-            authListener.subscription.unsubscribe();
+            authListener?.subscription.unsubscribe();
             window.removeEventListener('app:buyPro', handleBuyPro);
         };
     }, []);
 
-    const login = () => supabase.auth.signInWithOAuth({ provider: 'github' });
-    const logout = () => supabase.auth.signOut();
+    const login = () => supabase?.auth.signInWithOAuth({ provider: 'github' });
+    const logout = () => supabase?.auth.signOut();
 
     return (
         <header className="toolkit-header">
