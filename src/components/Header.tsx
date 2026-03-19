@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
         };
     }, []);
 
-    const login = () => supabase?.auth.signInWithOAuth({ provider: 'github' });
+    const login = () => supabase?.auth.signInWithOAuth({ provider: 'google' });
     const logout = () => supabase?.auth.signOut();
 
     return (
