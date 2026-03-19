@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
         };
     }, []);
 
-    const login = () => supabase?.auth.signInWithOAuth({ provider: 'google' });
+    const login = () => supabase?.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
     const logout = () => supabase?.auth.signOut();
 
     return (
@@ -88,7 +88,7 @@ export const Header: React.FC = () => {
                 ) : (
                     <button onClick={login} className="login-btn">
                         <LogIn className="w-4 h-4" />
-                        Sign In
+                        Login
                     </button>
                 )}
             </div>
