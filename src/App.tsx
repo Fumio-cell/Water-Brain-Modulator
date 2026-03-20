@@ -16,11 +16,11 @@ function App() {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-brain-bg to-[#0b1021] relative flex flex-col justify-center">
+      <main className="flex-1 overflow-y-auto bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-brain-bg to-[#0b1021] relative">
         {/* subtle background grid for lab feel */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-        <div className="relative z-10 w-full">
+        <div className="relative z-10 w-full min-h-full flex flex-col py-8">
           <ModulatorUI isPro={isPro} />
         </div>
       </main>
