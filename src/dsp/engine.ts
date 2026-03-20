@@ -18,6 +18,18 @@ export class ModulationEngine {
     // Output
     private masterGain: GainNode | null = null;
 
+    // Binaural Beats Nodes
+    private binauralLeftOsc: OscillatorNode | null = null;
+    private binauralRightOsc: OscillatorNode | null = null;
+    private binauralMerger: ChannelMergerNode | null = null;
+    private binauralGain: GainNode | null = null;
+
+    // Binaural State
+    private binauralEnabled: boolean = false;
+    private binauralCarrierFreq: number = 432;
+    private binauralDiffFreq: number = 6;
+    private binauralVol: number = 0.5;
+
     // State
     private isPlaying = false;
     private lfoBuffer: AudioBuffer | null = null;
@@ -132,6 +144,8 @@ export class ModulationEngine {
             };
         }
 
+        this.setupBinaural();
+
         this.sourceNode.start();
         this.isPlaying = true;
     }
@@ -147,6 +161,8 @@ export class ModulationEngine {
             this.lfoBufferSource.disconnect();
             this.lfoBufferSource = null;
         }
+
+        this.stopBinaural();
         
         let result = null;
         if (this.isRecording && this.ctx) {
@@ -213,6 +229,93 @@ export class ModulationEngine {
 
     public getCurrentTime(): number {
         return this.ctx ? this.ctx.currentTime : 0;
+    }
+
+    // --- Binaural Methods ---
+    
+    public setBinauralState(enabled: boolean) {
+        this.binauralEnabled = enabled;
+        if (this.isPlaying) {
+            if (enabled) {
+                this.setupBinaural();
+            } else {
+                this.stopBinaural();
+            }
+        }
+    }
+
+    public setBinauralFrequencies(carrier: number, diff: number) {
+        this.binauralCarrierFreq = carrier;
+        this.binauralDiffFreq = diff;
+        this.updateBinauralFrequencies();
+    }
+
+    public setBinauralVolume(vol: number) {
+        this.binauralVol = vol;
+        if (this.binauralGain && this.ctx) {
+            this.binauralGain.gain.setTargetAtTime(vol, this.ctx.currentTime, 0.1);
+        }
+    }
+
+    private setupBinaural() {
+        if (!this.binauralEnabled || !this.ctx) return;
+        this.stopBinaural(); // Clean up existing if any
+
+        this.binauralMerger = this.ctx.createChannelMerger(2);
+        this.binauralGain = this.ctx.createGain();
+        this.binauralGain.gain.value = this.binauralVol;
+
+        this.binauralLeftOsc = this.ctx.createOscillator();
+        this.binauralRightOsc = this.ctx.createOscillator();
+        this.binauralLeftOsc.type = 'sine';
+        this.binauralRightOsc.type = 'sine';
+
+        this.updateBinauralFrequencies();
+
+        // Hard pan: Left Osc to Channel 0, Right Osc to Channel 1
+        this.binauralLeftOsc.connect(this.binauralMerger, 0, 0);
+        this.binauralRightOsc.connect(this.binauralMerger, 0, 1);
+
+        this.binauralMerger.connect(this.binauralGain);
+        this.binauralGain.connect(this.masterGain!);
+
+        if (this.isRecording && this.recorderNode) {
+            this.binauralGain.connect(this.recorderNode);
+        }
+
+        this.binauralLeftOsc.start();
+        this.binauralRightOsc.start();
+    }
+
+    private updateBinauralFrequencies() {
+        if (this.binauralLeftOsc && this.binauralRightOsc && this.ctx) {
+            const time = this.ctx.currentTime;
+            // E.g., Carrier=432, Diff=6 -> Left=429, Right=435
+            const halfDiff = this.binauralDiffFreq / 2;
+            this.binauralLeftOsc.frequency.setTargetAtTime(this.binauralCarrierFreq - halfDiff, time, 0.1);
+            this.binauralRightOsc.frequency.setTargetAtTime(this.binauralCarrierFreq + halfDiff, time, 0.1);
+        }
+    }
+
+    private stopBinaural() {
+        if (this.binauralLeftOsc) {
+            try { this.binauralLeftOsc.stop(); } catch (e) {}
+            this.binauralLeftOsc.disconnect();
+            this.binauralLeftOsc = null;
+        }
+        if (this.binauralRightOsc) {
+            try { this.binauralRightOsc.stop(); } catch (e) {}
+            this.binauralRightOsc.disconnect();
+            this.binauralRightOsc = null;
+        }
+        if (this.binauralMerger) {
+            this.binauralMerger.disconnect();
+            this.binauralMerger = null;
+        }
+        if (this.binauralGain) {
+            this.binauralGain.disconnect();
+            this.binauralGain = null;
+        }
     }
 
     // Get raw LFO values for visualization (returns left & right)

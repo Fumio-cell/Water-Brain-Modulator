@@ -7,6 +7,13 @@ interface ModulatorUIProps {
     isPro: boolean;
 }
 
+const BINAURAL_PRESETS = {
+    delta: { label: 'Delta (2.5Hz)', diff: 2.5, desc: 'Deep Sleep & Repair' },
+    theta: { label: 'Theta (6.0Hz)', diff: 6.0, desc: 'Meditation & Intuition' },
+    alpha: { label: 'Alpha (10.0Hz)', diff: 10.0, desc: 'Relaxation' },
+    beta: { label: 'Beta (15.0Hz)', diff: 15.0, desc: 'Focus & Alertness' },
+};
+
 export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     const [engine] = useState(() => new ModulationEngine());
     const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
@@ -18,6 +25,12 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     const [rippleDepth, setRippleDepth] = useState(0.4);
     const [fileName, setFileName] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Binaural State
+    const [binauralEnabled, setBinauralEnabled] = useState(false);
+    const [binauralPreset, setBinauralPreset] = useState<'delta' | 'theta' | 'alpha' | 'beta'>('theta');
+    const [carrierFreq, setCarrierFreq] = useState(432);
+    const [binauralVol, setBinauralVol] = useState(0.2);
 
     // Scopes visuals
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,6 +81,11 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
         }
         return () => cancelAnimationFrame(requestRef.current);
     }, [isPlaying, drawScopes]);
+
+    // Sync Binaural Engine
+    useEffect(() => { engine.setBinauralState(binauralEnabled); }, [engine, binauralEnabled]);
+    useEffect(() => { engine.setBinauralFrequencies(carrierFreq, BINAURAL_PRESETS[binauralPreset].diff); }, [engine, carrierFreq, binauralPreset]);
+    useEffect(() => { engine.setBinauralVolume(binauralVol); }, [engine, binauralVol]);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -332,6 +350,88 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                                 <span>Heavy Refraction</span>
                             </div>
                         </div>
+
+                        {/* BINAURAL ENTRAINMENT PANEL */}
+                        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-8">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                                    <Activity className="w-4 h-4 text-fuchsia-400" /> Brainwave Entrainment
+                                </h2>
+                                <button
+                                    onClick={() => setBinauralEnabled(!binauralEnabled)}
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
+                                        binauralEnabled 
+                                            ? 'bg-fuchsia-500 text-white shadow-[0_0_15px_rgba(217,70,239,0.4)]'
+                                            : 'bg-white/5 text-slate-500 hover:bg-white/10'
+                                    }`}
+                                >
+                                    {binauralEnabled ? 'Active' : 'Disabled'}
+                                </button>
+                            </div>
+
+                            <div className={`flex flex-col gap-8 transition-opacity duration-500 ${binauralEnabled ? 'opacity-100 pointer-events-auto' : 'opacity-30 pointer-events-none'}`}>
+                                
+                                {/* Preset Selector */}
+                                <div className="flex flex-col gap-3">
+                                    <label className="text-[11px] font-bold text-fuchsia-400 uppercase tracking-tighter">
+                                        Target Brainwave State
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {(Object.keys(BINAURAL_PRESETS) as Array<keyof typeof BINAURAL_PRESETS>).map(key => (
+                                            <button
+                                                key={key}
+                                                onClick={() => setBinauralPreset(key as any)}
+                                                className={`p-3 rounded-xl border flex flex-col items-start gap-1 text-left transition-all ${
+                                                    binauralPreset === key 
+                                                    ? 'bg-fuchsia-500/10 border-fuchsia-500/50 text-fuchsia-300' 
+                                                    : 'bg-black/20 border-white/5 text-slate-500 hover:border-white/10'
+                                                }`}
+                                            >
+                                                <span className="text-[11px] font-bold uppercase">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].label}</span>
+                                                <span className="text-[9px] opacity-70 tracking-wide">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].desc}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Carrier Freq */}
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex justify-between items-end">
+                                        <label className="text-[11px] font-bold text-fuchsia-300 uppercase tracking-tighter">
+                                            Carrier Frequency
+                                        </label>
+                                        <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{carrierFreq} Hz</span>
+                                    </div>
+                                    <input
+                                        type="range" min="100" max="800" step="1"
+                                        value={carrierFreq} onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
+                                        className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-400"
+                                    />
+                                    <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                                        <span>100Hz</span>
+                                        <span>(Default: 432Hz)</span>
+                                        <span>800Hz</span>
+                                    </div>
+                                </div>
+
+                                {/* Binaural Vol */}
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex justify-between items-end">
+                                        <label className="text-[11px] font-bold text-fuchsia-200 uppercase tracking-tighter">
+                                            Binaural Mix Level
+                                        </label>
+                                        <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(binauralVol * 100).toFixed(0)}%</span>
+                                    </div>
+                                    <input
+                                        type="range" min="0" max="1" step="0.01"
+                                        value={binauralVol} onChange={(e) => setBinauralVol(parseFloat(e.target.value))}
+                                        className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-300"
+                                    />
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                     
                     <div className="mt-auto pt-4 flex items-center gap-3 text-slate-600 border-t border-white/5">
