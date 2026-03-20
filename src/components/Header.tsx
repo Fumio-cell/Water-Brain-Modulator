@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { supabase, openLemonSqueezyCheckout } from '../lib/commercial';
-import { LogIn, LogOut, Zap, Activity } from 'lucide-react';
+import { LogIn, LogOut, Zap, Activity, Info, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [isPro, setIsPro] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
 
     useEffect(() => {
         const client = supabase;
@@ -67,6 +68,9 @@ export const Header: React.FC = () => {
                 </div>
                 <div className="app-separator">/</div>
                 <div className="app-name">Water Brain Modulator</div>
+                <button onClick={() => setShowInfo(true)} className="info-btn">
+                    <Info className="w-4 h-4" />
+                </button>
             </div>
 
             <div className="header-right">
@@ -221,7 +225,61 @@ export const Header: React.FC = () => {
                     color: #fff;
                     background: rgba(255, 255, 255, 0.1);
                 }
-            `}</style>
+            `}
+                .info-modal-overlay {
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+                    display: flex; align-items: center; justify-content: center; z-index: 99999;
+                }
+                .info-modal {
+                    background: #111827; border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 16px; padding: 32px; max-width: 600px;
+                    width: 90%; max-height: 85vh; overflow-y: auto;
+                    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+                    position: relative;
+                    text-align: left;
+                }
+                .info-modal h2 { margin-top: 0; color: #f8fafc; font-size: 1.5rem; }
+                .info-modal h3 { color: #38bdf8; font-size: 0.85rem; margin-bottom: 24px; font-weight: 600; }
+                .info-modal p { color: #cbd5e1; line-height: 1.6; font-size: 0.9rem; margin-bottom: 12px; }
+                .info-modal ul { color: #cbd5e1; font-size: 0.85rem; padding-left: 20px; list-style-type: none; margin:0; padding:0; }
+                .info-modal li { margin-bottom: 8px; font-weight: 500; color: #94a3b8; }
+                .info-close {
+                    position: absolute; top: 16px; right: 16px;
+                    background: transparent; border: none; color: #64748b;
+                    cursor: pointer; padding: 6px; border-radius: 6px; transition: all 0.2s;
+                }
+                .info-close:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
+                .info-btn {
+                    background: transparent; border: none; color: #64748b; cursor: pointer;
+                    display: flex; align-items: center; justify-content: center;
+                    margin-left: 12px; transition: color 0.2s;
+                }
+                .info-btn:hover { color: #f8fafc; }
+    
+            </style>
+        
+            {showInfo && (
+                <div className="info-modal-overlay" onClick={() => setShowInfo(false)}>
+                    <div className="info-modal" onClick={e => e.stopPropagation()}>
+                        <button className="info-close" onClick={() => setShowInfo(false)}><X className="w-5 h-5"/></button>
+                        <h2>Water Brain Modulator</h2>
+                        <h3>Binaural & 1/f Organic Audio Entrainment | バイノーラル＆1/fゆらぎ オーディオエントレインメント</h3>
+                        
+                        <div style={{ marginBottom: '24px' }}>
+                            <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>EN</div>
+                            <p>Water Brain Modulator transforms any ambient audio into a scientifically grounded healing instrument. By injecting a low-frequency oscillator (1/f pink noise) to modulate volume, panning, and filter cutoffs, it creates an organic "breathing" and "drifting" spatial effect. Furthermore, it completely features a true dual-hemisphere Binaural Beat Synthesizer. By configuring target brainwave differentials (Delta, Theta, Alpha, Beta) and a custom carrier frequency (Default: 432Hz), the engine routes distinct pure sine waves into each ear, encouraging deep neurological synchronization (brainwave entrainment).</p>
+                            <ul><li>Key Features: 1/f Organic Drift Modulator, Binaural Beat Synthesizer, 432Hz Core Carrier, High-Quality .wav Export.</li></ul>
+                        </div>
+
+                        <div>
+                            <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>JP</div>
+                            <p>Water Brain Modulatorは、お好みのアンビエント音源や音楽を、科学的アプローチに基づくヒーリングツールへと変換します。1/fゆらぎ（ピンクノイズ）を利用したLFO（低周波発振器）が、音量・パン・フィルターに有機的な「呼吸」と「空間の漂い」を生み出します。さらに、左右の耳に独立した純音を送信する真の「Binaural Beat（バイノーラル・ビート）発生器」を搭載。デルタ波からベータ波まで、目的の脳波状態を選択し、432Hzなどのキャリア周波数の裏で鳴らすことで、深い脳波同調（エントレインメント）を促します。</p>
+                            <ul><li>主要機能: 1/f 有機的揺らぎモジュレーター、バイノーラルビート・シンセサイザー、WAV形式での高音質書き出し。</li></ul>
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };
