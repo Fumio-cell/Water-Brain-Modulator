@@ -85,14 +85,22 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     };
 
     const handleDownload = (recordData: { channels: Float32Array[], sampleRate: number }) => {
-        const blob = encodeWav(recordData.channels, recordData.sampleRate);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const base = fileName?.replace(/\.[^.]+$/, '') || 'modulated';
-        a.download = `${base}_modulated.wav`;
-        a.click();
-        URL.revokeObjectURL(url);
+        try {
+            const blob = encodeWav(recordData.channels, recordData.sampleRate);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            const base = fileName?.replace(/\.[^.]+$/, '') || 'modulated';
+            a.download = `${base}_modulated.wav`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            console.error("Download failed:", e);
+            alert("ダウンロード中にエラーが発生しました。");
+        }
     };
 
     const togglePlay = (recordMode: boolean = false) => {
