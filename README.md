@@ -1,50 +1,14 @@
-# React + TypeScript + Vite
+# Water-Brain-Modulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Binaural & 1/f Organic Audio Entrainment** | **バイノーラル＆1/fゆらぎ オーディオエントレインメント**
 
-Currently, two official plugins are available:
+### [ English ]
+Water Brain Modulator transforms any ambient audio into a scientifically grounded healing instrument. By injecting a low-frequency oscillator (1/f pink noise) to modulate volume, panning, and filter cutoffs, it creates an organic "breathing" and "drifting" spatial effect. Furthermore, it completely features a true dual-hemisphere Binaural Beat Synthesizer. By configuring target brainwave differentials (Delta, Theta, Alpha, Beta) and a custom carrier frequency (Default: 432Hz), the engine routes distinct pure sine waves into each ear, encouraging deep neurological synchronization (brainwave entrainment).
+*   **Key Features:** 1/f Organic Drift Modulator, Binaural Beat Synthesizer, 432Hz Core Carrier, High-Quality `.wav` Export.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### [ 日本語 ]
+Water Brain Modulatorは、お好みのアンビエント音源や音楽を、科学的アプローチに基づくヒーリングツールへと変換します。1/fゆらぎ（ピンクノイズ）を利用したLFO（低周波発振器）が、音量・パン・フィルターに有機的な「呼吸」と「空間の漂い」を生み出します。さらに、左右の耳に独立した純音を送信する真の「Binaural Beat（バイノーラル・ビート）発生器」を搭載。デルタ波からベータ波まで、目的の脳波状態を選択し、432Hzなどのキャリア周波数の裏で鳴らすことで、深い脳波同調（エントレインメント）を促します。
+*   **主要機能:** 1/f 有機的揺らぎモジュレーター、バイノーラルビート・シンセサイザー、WAV形式での高音質書き出し。
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+---
+*Part of the Poetic Signal Toolkit*
