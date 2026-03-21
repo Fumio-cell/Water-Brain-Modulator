@@ -232,8 +232,8 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
 
                     <div className="flex flex-col gap-6">
                         {audioBuffer ? (
-                            <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/5">
-                                <WaveformPreview audioBuffer={audioBuffer} />
+                            <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/50">
+                                <WaveformPreview audioBuffer={audioBuffer} engine={engine} isPlaying={isPlaying} />
                                 <button 
                                     onClick={handleClear}
                                     title="Remove Audio"

@@ -1,11 +1,36 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { ModulationEngine } from '../dsp/engine';
 
 interface WaveformPreviewProps {
     audioBuffer: AudioBuffer | null;
+    engine: ModulationEngine;
+    isPlaying: boolean;
 }
 
-const WaveformPreview: React.FC<WaveformPreviewProps> = ({ audioBuffer }) => {
+const WaveformPreview: React.FC<WaveformPreviewProps> = ({ audioBuffer, engine, isPlaying }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [progress, setProgress] = useState(0);
+    const rafRef = useRef<number>();
+
+    useEffect(() => {
+        if (!isPlaying) {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+            if (!audioBuffer) setProgress(0); // Reset if cleared
+            return;
+        }
+
+        const updateProgress = () => {
+            if (engine) {
+                setProgress(engine.getPlaybackProgress());
+            }
+            rafRef.current = requestAnimationFrame(updateProgress);
+        };
+        rafRef.current = requestAnimationFrame(updateProgress);
+
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, [isPlaying, engine, audioBuffer]);
 
     useEffect(() => {
         if (!audioBuffer || !canvasRef.current) return;
@@ -81,6 +106,14 @@ const WaveformPreview: React.FC<WaveformPreviewProps> = ({ audioBuffer }) => {
                 ref={canvasRef} 
                 className="w-full h-full block opacity-80 group-hover:opacity-100 transition-opacity duration-300"
             />
+            {isPlaying && (
+                <div 
+                    className="absolute top-0 bottom-0 w-[2px] bg-white z-20 pointer-events-none shadow-[0_0_10px_#fff]"
+                    style={{ left: `${progress * 100}%` }}
+                >
+                    <div className="absolute top-0 -translate-x-[4px] w-[10px] h-[10px] rounded-full bg-white shadow-[0_0_10px_#fff]"></div>
+                </div>
+            )}
         </div>
     );
 };

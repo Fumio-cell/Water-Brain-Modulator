@@ -33,6 +33,7 @@ export class ModulationEngine {
     // State
     private isPlaying = false;
     private lfoBuffer: AudioBuffer | null = null;
+    private startTime: number = 0;
 
     // Recording state
     private recorderNode: ScriptProcessorNode | null = null;
@@ -146,8 +147,16 @@ export class ModulationEngine {
 
         this.setupBinaural();
 
+        this.startTime = this.ctx.currentTime;
         this.sourceNode.start();
         this.isPlaying = true;
+    }
+
+    public getPlaybackProgress(): number {
+        if (!this.isPlaying || !this.ctx || !this.sourceNode || !this.sourceNode.buffer) return 0;
+        const duration = this.sourceNode.buffer.duration;
+        const elapsed = this.ctx.currentTime - this.startTime;
+        return (elapsed % duration) / duration;
     }
 
     public stop(): { channels: Float32Array[], sampleRate: number } | null {
