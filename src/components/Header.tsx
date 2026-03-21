@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase, openLemonSqueezyCheckout } from '../lib/commercial';
 import { LogIn, LogOut, Zap, Activity, Info, X } from 'lucide-react';
 
@@ -260,7 +261,7 @@ export const Header: React.FC = () => {
             `}
             </style>
         
-            {showInfo && (
+            {showInfo && createPortal(
                 <div className="info-modal-overlay" onClick={() => setShowInfo(false)}>
                     <div className="info-modal" onClick={e => e.stopPropagation()}>
                         <button className="info-close" onClick={() => setShowInfo(false)}><X className="w-5 h-5"/></button>
@@ -279,7 +280,8 @@ export const Header: React.FC = () => {
                             <ul><li>主要機能: 1/f 有機的揺らぎモジュレーター、バイノーラルビート・シンセサイザー、WAV形式での高音質書き出し。</li></ul>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </header>
     );
