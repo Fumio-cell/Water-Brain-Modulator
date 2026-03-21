@@ -292,7 +292,24 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <span className="truncate pr-4">{isLoading ? 'STABILIZING STREAM...' : (fileName || 'AWAITING INPUT')}</span>
                             <span className="opacity-50 tracking-widest">{isRecording ? 'CAPTURING...' : 'IDLE'}</span>
                         </div>
-                    </div>
+
+                        {/* BINAURAL ENTRAINMENT PANEL */}
+                        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-8">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                                    <Activity className="w-4 h-4 text-fuchsia-400" /> Brainwave Entrainment
+                                </h2>
+                                <button
+                                    onClick={() => setBinauralEnabled(!binauralEnabled)}
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
+                                        binauralEnabled 
+                                            ? 'bg-fuchsia-500 text-white shadow-[0_0_15px_rgba(217,70,239,0.4)]'
+                                            : 'bg-white/5 text-slate-500 hover:bg-white/10'
+                                    }`}
+                                >
+                                    {binauralEnabled ? 'Active' : 'Disabled'}
+                                </button>
+                            </div>
                 </div>
 
                 {/* DSP Parameters Panel */}
@@ -378,23 +395,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             </div>
                         </div>
 
-                        {/* BINAURAL ENTRAINMENT PANEL */}
-                        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-8">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
-                                    <Activity className="w-4 h-4 text-fuchsia-400" /> Brainwave Entrainment
-                                </h2>
-                                <button
-                                    onClick={() => setBinauralEnabled(!binauralEnabled)}
-                                    className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
-                                        binauralEnabled 
-                                            ? 'bg-fuchsia-500 text-white shadow-[0_0_15px_rgba(217,70,239,0.4)]'
-                                            : 'bg-white/5 text-slate-500 hover:bg-white/10'
-                                    }`}
-                                >
-                                    {binauralEnabled ? 'Active' : 'Disabled'}
-                                </button>
-                            </div>
+                    </div>
 
                             <div className={`flex flex-col gap-8 transition-opacity duration-500 ${binauralEnabled ? 'opacity-100 pointer-events-auto' : 'opacity-30 pointer-events-none'}`}>
                                 
