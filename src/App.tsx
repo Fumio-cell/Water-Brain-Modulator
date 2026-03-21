@@ -6,6 +6,10 @@ function App() {
   const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
+    // Catch cases where the event fired before this listener was attached
+    if (typeof (window as any).__isPro !== 'undefined') {
+        setIsPro((window as any).__isPro);
+    }
     const handleAuth = (e: any) => setIsPro(e.detail.isPro);
     window.addEventListener('auth:status', handleAuth as EventListener);
     return () => window.removeEventListener('auth:status', handleAuth as EventListener);
