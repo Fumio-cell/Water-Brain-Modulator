@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Play, Square, UploadCloud, Activity, Waves, Zap, Mic, Download } from 'lucide-react';
+import { Play, Square, UploadCloud, Activity, Waves, Zap, Mic, Download, X } from 'lucide-react';
 import { ModulationEngine } from '../dsp/engine';
 import { encodeWav } from '../audio/encoder';
+import WaveformPreview from './WaveformPreview';
 
 interface ModulatorUIProps {
     isPro: boolean;
@@ -143,6 +144,16 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
         }
     };
 
+    const handleClear = () => {
+        if (isPlaying) {
+            engine.stop();
+            setIsPlaying(false);
+            setIsRecording(false);
+        }
+        setAudioBuffer(null);
+        setFileName(null);
+    };
+
     const handleVolDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = parseFloat(e.target.value);
         setVolDepth(val);
@@ -220,15 +231,31 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                     </div>
 
                     <div className="flex flex-col gap-6">
-                        <label className="group relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-700/50 rounded-2xl cursor-pointer hover:bg-white/[0.02] hover:border-brain-accent/30 transition-all duration-300">
-                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                <UploadCloud className="w-10 h-10 mb-4 text-slate-500 group-hover:text-brain-accent transition-colors duration-300" />
-                                <p className="text-xs text-slate-400 group-hover:text-slate-200">
-                                    Drop <span className="text-brain-accent">Ambient / Audio</span> here
-                                </p>
+                        {audioBuffer ? (
+                            <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+                                <WaveformPreview audioBuffer={audioBuffer} />
+                                <button 
+                                    onClick={handleClear}
+                                    title="Remove Audio"
+                                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center bg-black/60 hover:bg-red-500 text-white rounded-full transition-colors z-20 backdrop-blur-md"
+                                >
+                                    <X className="w-3 h-3" />
+                                </button>
+                                <div className="absolute bottom-2 right-3 font-mono text-[9px] text-slate-400/70 tracking-widest pointer-events-none uppercase">
+                                    {fileName}
+                                </div>
                             </div>
-                            <input type="file" className="hidden" accept="audio/*" onChange={handleFileUpload} />
-                        </label>
+                        ) : (
+                            <label className="group relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-700/50 rounded-2xl cursor-pointer hover:bg-white/[0.02] hover:border-brain-accent/30 transition-all duration-300">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <UploadCloud className="w-10 h-10 mb-4 text-slate-500 group-hover:text-brain-accent transition-colors duration-300" />
+                                    <p className="text-xs text-slate-400 group-hover:text-slate-200">
+                                        Drop <span className="text-brain-accent">Ambient / Audio</span> here
+                                    </p>
+                                </div>
+                                <input type="file" className="hidden" accept="audio/*" onChange={handleFileUpload} />
+                            </label>
+                        )}
 
                         <div className="flex flex-col gap-3">
                             <button
