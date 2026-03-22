@@ -114,6 +114,7 @@ export const Header: React.FC = () => {
                     top: 0;
                     z-index: 1000;
                     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                    font-size: 0.875rem;
                 }
                 .header-left, .header-right {
                     display: flex;
@@ -131,6 +132,7 @@ export const Header: React.FC = () => {
                     height: 1.25rem;
                 }
                 .toolkit-name {
+                    font-size: 0.85rem;
                     font-weight: 700;
                     letter-spacing: -0.02em;
                     color: #fff;
@@ -142,7 +144,7 @@ export const Header: React.FC = () => {
                 }
                 .app-name {
                     color: rgba(255, 255, 255, 0.7);
-                    font-size: 0.95rem;
+                    font-size: 0.85rem;
                     font-weight: 500;
                 }
                 .user-profile {
