@@ -53,10 +53,10 @@ const WaveformPreview: React.FC<WaveformPreviewProps> = ({ audioBuffer, engine, 
 
         ctx.clearRect(0, 0, width, height);
 
-        // Water Brain Modulator styling: #38bdf8 (cyan) to #818cf8 (indigo) to #d946ef (fuchsia)
-        const grad = ctx.createLinearGradient(0, 0, width, 0);
-        grad.addColorStop(0, '#38bdf8');
-        grad.addColorStop(0.5, '#818cf8');
+        // Water Brain Modulator styling: #7c5cfc (purple) to #5ce0fc (cyan) to #d946ef (fuchsia)
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        grad.addColorStop(0, '#7c5cfc');
+        grad.addColorStop(0.5, '#5ce0fc');
         grad.addColorStop(1, '#d946ef');
 
         ctx.beginPath();
@@ -99,7 +99,7 @@ const WaveformPreview: React.FC<WaveformPreviewProps> = ({ audioBuffer, engine, 
     return (
         <div className="w-full relative h-28 bg-white/[0.01] rounded-2xl border border-white/5 overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"></div>
-            <div className="absolute top-2 left-3 text-[8px] font-mono font-bold tracking-[0.2em] text-[#38bdf8] uppercase opacity-50 relative z-10 pointer-events-none">
+            <div className="absolute top-2 left-3 text-[8px] font-mono font-bold tracking-[0.2em] text-[#7c5cfc] uppercase opacity-50 relative z-10 pointer-events-none">
                 Full Spectrum Timeline
             </div>
             <canvas 

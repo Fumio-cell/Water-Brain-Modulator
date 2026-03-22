@@ -59,14 +59,14 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
 
         // Vol (Cyan)
         const volY = canvas.height * 0.25 + (lfos.volLfo * canvas.height * 0.2);
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#7c5cfc';
         ctx.beginPath();
         ctx.arc(drawX, volY, 2, 0, 2 * Math.PI);
         ctx.fill();
 
         // Pan (Indigo)
         const panY = canvas.height * 0.75 + (lfos.panLfo * canvas.height * 0.2);
-        ctx.fillStyle = '#818cf8';
+        ctx.fillStyle = '#5ce0fc';
         ctx.beginPath();
         ctx.arc(drawX, panY, 2, 0, 2 * Math.PI);
         ctx.fill();
@@ -184,8 +184,8 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
             {/* Visualizer Panel */}
             <div className="w-full bg-brain-panel/50 backdrop-blur-xl rounded-2xl border border-white/5 shadow-2xl overflow-hidden mb-8 relative group">
                 <div className="absolute top-4 left-4 text-[10px] font-mono text-slate-500 uppercase flex gap-4 z-10">
-                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] shadow-[0_0_8px_#38bdf8]"></span> 1/f Breathe</span>
-                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#818cf8] shadow-[0_0_8px_#818cf8]"></span> 1/f Drift</span>
+                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#7c5cfc] shadow-[0_0_8px_#7c5cfc]"></span> 1/f Breathe</span>
+                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#5ce0fc] shadow-[0_0_8px_#5ce0fc]"></span> 1/f Drift</span>
                 </div>
                 
                 {isRecording && (
@@ -322,7 +322,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                         {/* Volume Depth Slider */}
                         <div className="flex flex-col gap-5">
                             <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-[#38bdf8] uppercase tracking-tighter">
+                                <label className="text-[11px] font-bold text-[#7c5cfc] uppercase tracking-tighter">
                                     Breathe Depth
                                 </label>
                                 <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(volDepth * 100).toFixed(0)}%</span>
@@ -330,7 +330,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={volDepth} onChange={handleVolDepthChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#38bdf8]"
+                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#7c5cfc]"
                             />
                             <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
                                 <span>Static</span>
@@ -341,7 +341,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                         {/* Pan Depth Slider */}
                         <div className="flex flex-col gap-5">
                             <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-[#818cf8] uppercase tracking-tighter">
+                                <label className="text-[11px] font-bold text-[#5ce0fc] uppercase tracking-tighter">
                                     Spatial Drift
                                 </label>
                                 <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(panDepth * 100).toFixed(0)}%</span>
@@ -349,7 +349,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={panDepth} onChange={handlePanDepthChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#818cf8]"
+                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#5ce0fc]"
                             />
                             <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
                                 <span>Narrow</span>
