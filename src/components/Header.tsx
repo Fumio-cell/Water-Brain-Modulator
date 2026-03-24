@@ -12,50 +12,29 @@ export const Header: React.FC = () => {
         const client = supabase;
         if (!client) return;
 
-        client.auth.getUser().then(({ data: { user: foundUser } }) => {
+        client.auth.getUser().then(({ data: { user: foundUser } }: any) => {
             setUser(foundUser);
-            if (foundUser) {
-                client
-                    .from('profiles')
-                    .select('is_pro')
-                    .eq('id', foundUser.id)
-                    .single()
-                    .then(({ data }) => {
-                        const pro = !!(data as any)?.is_pro;
-                        const finalPro = pro || foundUser?.email === 'fumiotashiro@gmail.com';
-                        (window as any).__isPro = finalPro;
-                        setIsPro(finalPro);
-                        window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: foundUser, isPro: finalPro } }));
-                    });
-            }
+            // Force Pro status regardless of profile
+            const finalPro = true;
+            (window as any).__isPro = finalPro;
+            setIsPro(finalPro);
+            window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: foundUser, isPro: finalPro } }));
+            setTimeout(() => window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: foundUser, isPro: finalPro } })), 200);
         });
 
-        const { data: authListener } = client.auth.onAuthStateChange(async (_event, session) => {
+        const { data: authListener } = client.auth.onAuthStateChange(async (_event: any, session: any) => {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
-            if (currentUser) {
-                const { data } = await client
-                    .from('profiles')
-                    .select('is_pro')
-                    .eq('id', currentUser.id)
-                    .single();
-                const pro = !!(data as any)?.is_pro;
-                const finalPro = pro || currentUser?.email === 'fumiotashiro@gmail.com';
-                (window as any).__isPro = finalPro;
-                setIsPro(finalPro);
-                window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: currentUser, isPro: finalPro } }));
-            } else {
-                setIsPro(false);
-                window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: null, isPro: false } }));
-            }
+            // Force Pro status regardless of session
+            const finalPro = true;
+            (window as any).__isPro = finalPro;
+            setIsPro(finalPro);
+            window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: currentUser, isPro: finalPro } }));
+            setTimeout(() => window.dispatchEvent(new CustomEvent('auth:status', { detail: { user: currentUser, isPro: finalPro } })), 200);
         });
-
-        const handleBuyPro = () => openLemonSqueezyCheckout();
-        window.addEventListener('app:buyPro', handleBuyPro);
 
         return () => {
             authListener?.subscription.unsubscribe();
-            window.removeEventListener('app:buyPro', handleBuyPro);
         };
     }, []);
 
@@ -66,7 +45,7 @@ export const Header: React.FC = () => {
         <header className="toolkit-header">
             <div className="header-left">
                 <div className="toolkit-brand">
-                    <svg className="brand-icon" viewBox="0 0 48 48" fill="none"><path d="M24 6 Q24 6 32 20 Q38 30 32 36 Q28 42 24 42 Q20 42 16 36 Q10 30 16 20 Q24 6 24 6Z" stroke="#7c5cfc" strokeWidth="1.5" fill="none"/><path d="M16 26 L19 26 L21 22 L23 30 L25 20 L27 28 L29 24 L32 26" stroke="#5ce0fc" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <svg className="brand-icon" viewBox="0 0 48 48" fill="none"><path d="M12 36 L12 28 Q12 24 18 24 L30 24 Q36 24 36 28 L36 36" stroke="#7c5cfc" strokeWidth="2" strokeLinecap="round" opacity="0.6"/><path d="M24 12 Q24 20 28 20 Q32 20 32 12 Q32 4 28 4 Q24 4 24 12" stroke="#7c5cfc" strokeWidth="2" fill="none" strokeLinecap="round"/><path d="M10 20 Q24 34 38 20" stroke="#5ce0fc" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.8"/></svg>
                     <span className="toolkit-name">Poetic Signal Toolkit</span>
                 </div>
                 <div className="app-separator">/</div>
@@ -79,25 +58,26 @@ export const Header: React.FC = () => {
             <div className="header-right">
                 {user ? (
                     <div className="user-profile">
-                        <div className={`pro-badge ${isPro ? 'active' : ''}`}>
+                        <div className="pro-badge active">
                             <Zap className="w-3 h-3" />
-                            {isPro ? 'PRO' : 'FREE'}
+                            PRO
                         </div>
                         <span className="user-email">{user.email}</span>
-                        {!isPro && (
-                            <button onClick={() => openLemonSqueezyCheckout()} className="upgrade-btn">
-                                Upgrade
-                            </button>
-                        )}
                         <button onClick={logout} className="icon-btn" title="Logout">
                             <LogOut className="w-4 h-4" />
                         </button>
                     </div>
                 ) : (
-                    <button onClick={login} className="login-btn">
-                        <LogIn className="w-4 h-4" />
-                        Login
-                    </button>
+                    <div className="user-profile">
+                        <div className="pro-badge active">
+                            <Zap className="w-3 h-3" />
+                            PRO
+                        </div>
+                        <span className="user-email">Local Mode</span>
+                        <button onClick={login} className="icon-btn" title="Login for Sync">
+                            <LogIn className="w-4 h-4" />
+                        </button>
+                    </div>
                 )}
             </div>
 
