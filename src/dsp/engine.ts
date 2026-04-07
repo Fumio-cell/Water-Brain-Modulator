@@ -64,14 +64,20 @@ export class ModulationEngine {
         return audioBuffer;
     }
 
-    public play(buffer: AudioBuffer, volDepth: number = 0.5, panDepth: number = 0.5, flowSpeed: number = 1.0, rippleDepth: number = 0.3, startRecording: boolean = false) {
+    public play(buffer: AudioBuffer, volDepth: number = 0.5, panDepth: number = 0.5, flowSpeed: number = 1.0, rippleDepth: number = 0.3, startRecording: boolean = false, onEnded?: () => void) {
         if (!this.ctx) return;
         this.stop();
 
         // 1. Audio Source
         this.sourceNode = this.ctx.createBufferSource();
         this.sourceNode.buffer = buffer;
-        this.sourceNode.loop = true;
+        this.sourceNode.loop = !startRecording; // Only loop if NOT recording
+
+        this.sourceNode.onended = () => {
+            if (this.isPlaying) {
+                onEnded?.();
+            }
+        };
 
         // 2. Processing Chain: Source -> Filter -> PanNode -> VolNode -> MasterGain
         this.filterModNode = this.ctx.createBiquadFilter();

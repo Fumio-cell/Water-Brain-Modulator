@@ -122,6 +122,28 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
         }
     };
 
+    const onPlaybackEnded = useCallback(() => {
+        setIsPlaying(prevIsPlaying => {
+            if (!prevIsPlaying) return false;
+            
+            // We use a functional update to get the latest isRecording state indirectly 
+            // but actually we can just use the state from the closure if we update the callback
+            return false;
+        });
+        
+        setIsRecording(prevIsRecording => {
+            if (prevIsRecording) {
+                const recordData = engine.stop();
+                if (recordData) {
+                    handleDownload(recordData);
+                }
+            } else {
+                engine.stop();
+            }
+            return false;
+        });
+    }, [engine, handleDownload]);
+
     const togglePlay = (recordMode: boolean = false) => {
         if (!audioBuffer) return;
         if (isPlaying) {
@@ -138,7 +160,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                 }
                 return;
             }
-            engine.play(audioBuffer, volDepth, panDepth, flowSpeed, rippleDepth, recordMode);
+            engine.play(audioBuffer, volDepth, panDepth, flowSpeed, rippleDepth, recordMode, onPlaybackEnded);
             setIsPlaying(true);
             setIsRecording(recordMode);
         }
