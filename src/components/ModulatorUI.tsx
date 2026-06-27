@@ -28,7 +28,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     // Binaural State
-    const [binauralEnabled, setBinauralEnabled] = useState(false);
+    const [binauralEnabled, setBinauralEnabled] = useState(true);
     const [binauralPreset, setBinauralPreset] = useState<'delta' | 'theta' | 'alpha' | 'beta'>('theta');
     const [carrierFreq, setCarrierFreq] = useState(432);
     const [binauralVol, setBinauralVol] = useState(0.2);
@@ -225,10 +225,14 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                 ></canvas>
                 
                 {!isPlaying && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-slate-950/20">
-                        <div className="flex flex-col items-center gap-2 transition-transform duration-500 scale-95 opacity-50">
-                            <Activity className="w-8 h-8 text-slate-500" />
-                            <span className="text-slate-600 font-mono tracking-[0.3em] text-[10px] uppercase">
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        {/* Ambient pulse rings */}
+                        <div className="absolute w-24 h-24 rounded-full border border-[#7c5cfc]/10 animate-ping" style={{ animationDuration: '3s' }} />
+                        <div className="absolute w-40 h-40 rounded-full border border-[#5ce0fc]/6 animate-ping" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+                        <div className="absolute w-56 h-56 rounded-full border border-[#7c5cfc]/4 animate-ping" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+                        <div className="flex flex-col items-center gap-3 z-10">
+                            <Activity className="w-6 h-6 text-slate-600" />
+                            <span className="text-slate-600 font-mono tracking-[0.25em] text-[9px] uppercase">
                                 System Idle / Waiting for Signal
                             </span>
                         </div>
