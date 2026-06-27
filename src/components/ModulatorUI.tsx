@@ -279,36 +279,36 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                         <button
                             onClick={() => togglePlay(false)}
                             disabled={!audioBuffer || isLoading || isRecording}
-                            className={`flex-1 md:flex-none h-14 rounded-xl font-black text-[11px] tracking-[0.12em] flex items-center justify-center gap-2.5 transition-all duration-300 ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
-                                isPlaying && !isRecording ? 'bg-slate-200 text-slate-900 shadow-[0_0_24px_rgba(255,255,255,0.25)]' :
-                                    'bg-brain-accent/15 text-brain-accent hover:bg-brain-accent/25 border border-brain-accent/40 shadow-[0_0_20px_rgba(124,92,252,0.15)]'
+                            className={`flex-1 md:flex-none h-14 rounded-2xl font-semibold text-[13px] flex items-center justify-center gap-2.5 transition-all duration-300 ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
+                                isPlaying && !isRecording ? 'bg-white/90 text-slate-900 shadow-[0_0_24px_rgba(255,255,255,0.2)]' :
+                                    'bg-brain-accent/15 text-brain-accent hover:bg-brain-accent/25 border border-brain-accent/30 shadow-[0_0_20px_rgba(124,92,252,0.1)]'
                                 }`}
                         >
-                            {isPlaying && !isRecording ? <><Square className="w-4 h-4" /> STOP</> :
-                                <><Play className="w-4 h-4" /> INJECT 1/f FLOW</>}
+                            {isPlaying && !isRecording ? <><Square className="w-4 h-4" /> Stop</> :
+                                <><Play className="w-4 h-4" /> Inject 1/f Flow</>}
                         </button>
 
                         <button
                             onClick={() => togglePlay(true)}
                             disabled={!audioBuffer || isLoading || (isPlaying && !isRecording)}
-                            className={`flex-1 md:flex-none h-10 rounded-xl font-black text-[10px] tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-300 relative ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
-                                isRecording ? 'bg-red-500 text-white shadow-[0_0_25px_rgba(239,68,68,0.4)]' :
+                            className={`flex-1 md:flex-none h-10 rounded-2xl font-medium text-[13px] flex items-center justify-center gap-2 transition-all duration-300 relative ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
+                                isRecording ? 'bg-red-500/80 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]' :
                                     'bg-white/[0.05] text-slate-400 hover:bg-white/[0.08] border border-white/10'
                                 }`}
                         >
-                            {isRecording ? <><Download className="w-3 h-3" /> SAVE</> :
-                                <><Mic className="w-3 h-3" /> RECORD</>}
+                            {isRecording ? <><Download className="w-3.5 h-3.5" /> Save</> :
+                                <><Mic className="w-3.5 h-3.5" /> Record</>}
                             {!isPro && !isRecording && (
-                                <div className="absolute -top-2 -right-2 bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 font-bold">
+                                <div className="absolute -top-2 -right-2 bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded-full shadow-lg flex items-center gap-1 font-semibold">
                                     <Zap className="w-2 h-2" fill="currentColor" /> PRO
                                 </div>
                             )}
                         </button>
                     </div>
                 </div>
-                <div className="font-mono text-[9px] mt-3 p-2 bg-black/30 rounded-lg border border-white/5 text-slate-500 flex justify-between overflow-hidden">
-                    <span className="truncate pr-4">{isLoading ? 'STABILIZING STREAM...' : (fileName || 'AWAITING INPUT')}</span>
-                    <span className="opacity-50 tracking-widest">{isRecording ? 'CAPTURING...' : 'IDLE'}</span>
+                <div className="text-[11px] mt-2 px-1 text-slate-500 flex justify-between">
+                    <span className="truncate pr-4">{isLoading ? 'Loading…' : (fileName || 'No file loaded')}</span>
+                    <span className="opacity-60">{isRecording ? 'Recording' : 'Idle'}</span>
                 </div>
             </div>
 
@@ -317,82 +317,74 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
 
                 {/* LEFT COLUMN: Liquid Dynamics */}
                 <div className="bg-white/[0.03] backdrop-blur-md p-6 rounded-2xl border border-white/5 shadow-xl flex flex-col gap-8">
-                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3 border-b border-white/5 pb-4">
-                        <Waves className="w-4 h-4 text-brain-wave" /> Liquid Dynamics
+                    <h2 className="text-[15px] font-medium text-slate-300 flex items-center gap-2.5 border-b border-white/5 pb-4" style={{ fontFamily: "'Fraunces', serif" }}>
+                        <Waves className="w-4 h-4 text-brain-wave opacity-80" /> Liquid Dynamics
                     </h2>
 
-                    <div className="flex flex-col gap-8 flex-1">
+                    <div className="flex flex-col gap-7 flex-1">
                         {/* Volume Depth Slider */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-[#7c5cfc] uppercase tracking-tighter">
-                                    Breathe Depth
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(volDepth * 100).toFixed(0)}%</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-[#7c5cfc]">Breathe Depth</label>
+                                <span className="font-mono text-[11px] text-slate-500">{(volDepth * 100).toFixed(0)}%</span>
                             </div>
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={volDepth} onChange={handleVolDepthChange}
                                 className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#7c5cfc]"
                             />
-                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[10px] text-slate-500">
                                 <span>Static</span>
                                 <span>Organic Ripple</span>
                             </div>
                         </div>
 
                         {/* Pan Depth Slider */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-[#5ce0fc] uppercase tracking-tighter">
-                                    Spatial Drift
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(panDepth * 100).toFixed(0)}%</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-[#5ce0fc]">Spatial Drift</label>
+                                <span className="font-mono text-[11px] text-slate-500">{(panDepth * 100).toFixed(0)}%</span>
                             </div>
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={panDepth} onChange={handlePanDepthChange}
                                 className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#5ce0fc]"
                             />
-                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[10px] text-slate-500">
                                 <span>Narrow</span>
                                 <span>Oceanic Sweep</span>
                             </div>
                         </div>
 
                         {/* Flow Rate Slider */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-tighter">
-                                    Flow Rate
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{flowSpeed.toFixed(1)}x</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-emerald-400">Flow Rate</label>
+                                <span className="font-mono text-[11px] text-slate-500">{flowSpeed.toFixed(1)}x</span>
                             </div>
                             <input
                                 type="range" min="0.1" max="4" step="0.1"
                                 value={flowSpeed} onChange={handleFlowSpeedChange}
                                 className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-emerald-400"
                             />
-                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[10px] text-slate-500">
                                 <span>Stagnant</span>
                                 <span>Rapid Current</span>
                             </div>
                         </div>
 
                         {/* Ripple Depth Slider */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-amber-400 uppercase tracking-tighter">
-                                    Ripple Intensity
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(rippleDepth * 100).toFixed(0)}%</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-amber-400">Ripple Intensity</label>
+                                <span className="font-mono text-[11px] text-slate-500">{(rippleDepth * 100).toFixed(0)}%</span>
                             </div>
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={rippleDepth} onChange={handleRippleDepthChange}
                                 className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-amber-400"
                             />
-                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[10px] text-slate-500">
                                 <span>Still</span>
                                 <span>Heavy Refraction</span>
                             </div>
@@ -408,28 +400,26 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                 {/* RIGHT COLUMN: Brainwave Entrainment */}
                 <div className="bg-white/[0.03] backdrop-blur-md p-6 rounded-2xl border border-white/5 shadow-xl flex flex-col gap-6">
                     <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
-                            <Activity className="w-4 h-4 text-fuchsia-400" /> Brainwave Entrainment
+                        <h2 className="text-[15px] font-medium text-slate-300 flex items-center gap-2.5" style={{ fontFamily: "'Fraunces', serif" }}>
+                            <Activity className="w-4 h-4 text-fuchsia-400 opacity-80" /> Brainwave Entrainment
                         </h2>
                         <button
                             onClick={() => setBinauralEnabled(!binauralEnabled)}
-                            className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
-                                binauralEnabled 
-                                    ? 'bg-fuchsia-500 text-white shadow-[0_0_15px_rgba(217,70,239,0.4)]'
+                            className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+                                binauralEnabled
+                                    ? 'bg-fuchsia-500/80 text-white shadow-[0_0_12px_rgba(217,70,239,0.3)]'
                                     : 'bg-white/5 text-slate-500 hover:bg-white/10'
                             }`}
                         >
-                            {binauralEnabled ? 'Active' : 'Disabled'}
+                            {binauralEnabled ? 'Active' : 'Off'}
                         </button>
                     </div>
 
                     <div className={`flex flex-col gap-8 transition-opacity duration-500 flex-1 ${binauralEnabled ? 'opacity-100 pointer-events-auto' : 'opacity-30 pointer-events-none'}`}>
                         
                         {/* Preset Selector */}
-                        <div className="flex flex-col gap-3">
-                            <label className="text-[11px] font-bold text-fuchsia-400 uppercase tracking-tighter">
-                                Target Brainwave State
-                            </label>
+                        <div className="flex flex-col gap-2.5">
+                            <label className="text-[12px] font-medium text-fuchsia-400">Target Brainwave State</label>
                             <div className="grid grid-cols-2 gap-2">
                                 {(Object.keys(BINAURAL_PRESETS) as Array<keyof typeof BINAURAL_PRESETS>).map(key => (
                                     <button
@@ -437,44 +427,40 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                                         onClick={() => setBinauralPreset(key as any)}
                                         className={`p-3 rounded-xl border flex flex-col items-start gap-1 text-left transition-all duration-200 ${
                                             binauralPreset === key
-                                            ? 'bg-fuchsia-500/15 border-fuchsia-400/70 text-fuchsia-200 shadow-[0_0_16px_rgba(217,70,239,0.2)]'
-                                            : 'bg-black/20 border-white/8 text-slate-400 hover:border-white/20 hover:text-slate-300'
+                                            ? 'bg-fuchsia-500/15 border-fuchsia-400/60 text-fuchsia-200 shadow-[0_0_14px_rgba(217,70,239,0.15)]'
+                                            : 'bg-black/20 border-white/6 text-slate-400 hover:border-white/15 hover:text-slate-300'
                                         }`}
                                     >
-                                        <span className="text-[11px] font-bold uppercase">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].label}</span>
-                                        <span className="text-[9px] opacity-80 tracking-wide">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].desc}</span>
+                                        <span className="text-[12px] font-medium">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].label}</span>
+                                        <span className="text-[10px] text-slate-500">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].desc}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Carrier Freq */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-fuchsia-300 uppercase tracking-tighter">
-                                    Carrier Frequency
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{carrierFreq} Hz</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-fuchsia-300">Carrier Frequency</label>
+                                <span className="font-mono text-[11px] text-slate-500">{carrierFreq} Hz</span>
                             </div>
                             <input
                                 type="range" min="100" max="800" step="1"
                                 value={carrierFreq} onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
                                 className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-400"
                             />
-                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
-                                <span>100Hz</span>
-                                <span>(Default: 432Hz)</span>
-                                <span>800Hz</span>
+                            <div className="flex justify-between text-[10px] text-slate-500">
+                                <span>100 Hz</span>
+                                <span>432 Hz default</span>
+                                <span>800 Hz</span>
                             </div>
                         </div>
 
                         {/* Binaural Vol */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-fuchsia-200 uppercase tracking-tighter">
-                                    Binaural Mix Level
-                                </label>
-                                <span className="font-mono text-[10px] text-slate-500 bg-black/40 px-2 py-0.5 rounded">{(binauralVol * 100).toFixed(0)}%</span>
+                        <div className="flex flex-col gap-2.5">
+                            <div className="flex justify-between items-baseline">
+                                <label className="text-[12px] font-medium text-fuchsia-200">Binaural Mix</label>
+                                <span className="font-mono text-[11px] text-slate-500">{(binauralVol * 100).toFixed(0)}%</span>
                             </div>
                             <input
                                 type="range" min="0" max="1" step="0.01"
