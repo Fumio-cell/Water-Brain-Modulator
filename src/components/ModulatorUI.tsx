@@ -201,7 +201,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     };
 
     return (
-        <div className="flex flex-col min-h-full items-center p-4 md:p-8 w-full max-w-5xl mx-auto pb-24">
+        <div className="flex flex-col min-h-full items-center p-4 md:p-8 w-full max-w-5xl mx-auto pb-16">
 
             {/* Visualizer Panel */}
             <div className="w-full bg-brain-panel/50 backdrop-blur-xl rounded-2xl border border-white/5 shadow-2xl overflow-hidden mb-6 relative group">
@@ -271,17 +271,17 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                     </div>
 
                     {/* Transport Controls */}
-                    <div className="flex flex-row md:flex-col gap-2 md:w-48 shrink-0">
+                    <div className="flex flex-row md:flex-col gap-2 md:w-52 shrink-0">
                         <button
                             onClick={() => togglePlay(false)}
                             disabled={!audioBuffer || isLoading || isRecording}
-                            className={`flex-1 md:flex-none h-10 rounded-xl font-black text-[10px] tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-300 ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
-                                isPlaying && !isRecording ? 'bg-slate-200 text-slate-900 shadow-[0_0_20px_rgba(255,255,255,0.2)]' :
-                                    'bg-brain-accent/10 text-brain-accent hover:bg-brain-accent/20 border border-brain-accent/20'
+                            className={`flex-1 md:flex-none h-14 rounded-xl font-black text-[11px] tracking-[0.12em] flex items-center justify-center gap-2.5 transition-all duration-300 ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
+                                isPlaying && !isRecording ? 'bg-slate-200 text-slate-900 shadow-[0_0_24px_rgba(255,255,255,0.25)]' :
+                                    'bg-brain-accent/15 text-brain-accent hover:bg-brain-accent/25 border border-brain-accent/40 shadow-[0_0_20px_rgba(124,92,252,0.15)]'
                                 }`}
                         >
-                            {isPlaying && !isRecording ? <><Square className="w-3 h-3" /> STOP</> :
-                                <><Play className="w-3 h-3" /> INJECT 1/f FLOW</>}
+                            {isPlaying && !isRecording ? <><Square className="w-4 h-4" /> STOP</> :
+                                <><Play className="w-4 h-4" /> INJECT 1/f FLOW</>}
                         </button>
 
                         <button
@@ -289,7 +289,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             disabled={!audioBuffer || isLoading || (isPlaying && !isRecording)}
                             className={`flex-1 md:flex-none h-10 rounded-xl font-black text-[10px] tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-300 relative ${!audioBuffer ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed' :
                                 isRecording ? 'bg-red-500 text-white shadow-[0_0_25px_rgba(239,68,68,0.4)]' :
-                                    'bg-white/[0.05] text-slate-400 hover:bg-white/[0.08] border border-white/5'
+                                    'bg-white/[0.05] text-slate-400 hover:bg-white/[0.08] border border-white/10'
                                 }`}
                         >
                             {isRecording ? <><Download className="w-3 h-3" /> SAVE</> :
@@ -329,9 +329,9 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={volDepth} onChange={handleVolDepthChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#7c5cfc]"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#7c5cfc]"
                             />
-                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
                                 <span>Static</span>
                                 <span>Organic Ripple</span>
                             </div>
@@ -348,9 +348,9 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={panDepth} onChange={handlePanDepthChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#5ce0fc]"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#5ce0fc]"
                             />
-                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
                                 <span>Narrow</span>
                                 <span>Oceanic Sweep</span>
                             </div>
@@ -367,9 +367,9 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0.1" max="4" step="0.1"
                                 value={flowSpeed} onChange={handleFlowSpeedChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-emerald-400"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-emerald-400"
                             />
-                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
                                 <span>Stagnant</span>
                                 <span>Rapid Current</span>
                             </div>
@@ -386,9 +386,9 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={rippleDepth} onChange={handleRippleDepthChange}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-amber-400"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-amber-400"
                             />
-                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
                                 <span>Still</span>
                                 <span>Heavy Refraction</span>
                             </div>
@@ -431,14 +431,14 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                                     <button
                                         key={key}
                                         onClick={() => setBinauralPreset(key as any)}
-                                        className={`p-3 rounded-xl border flex flex-col items-start gap-1 text-left transition-all ${
-                                            binauralPreset === key 
-                                            ? 'bg-fuchsia-500/10 border-fuchsia-500/50 text-fuchsia-300' 
-                                            : 'bg-black/20 border-white/5 text-slate-500 hover:border-white/10'
+                                        className={`p-3 rounded-xl border flex flex-col items-start gap-1 text-left transition-all duration-200 ${
+                                            binauralPreset === key
+                                            ? 'bg-fuchsia-500/15 border-fuchsia-400/70 text-fuchsia-200 shadow-[0_0_16px_rgba(217,70,239,0.2)]'
+                                            : 'bg-black/20 border-white/8 text-slate-400 hover:border-white/20 hover:text-slate-300'
                                         }`}
                                     >
                                         <span className="text-[11px] font-bold uppercase">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].label}</span>
-                                        <span className="text-[9px] opacity-70 tracking-wide">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].desc}</span>
+                                        <span className="text-[9px] opacity-80 tracking-wide">{BINAURAL_PRESETS[key as keyof typeof BINAURAL_PRESETS].desc}</span>
                                     </button>
                                 ))}
                             </div>
@@ -455,9 +455,9 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="100" max="800" step="1"
                                 value={carrierFreq} onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-400"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-400"
                             />
-                            <div className="flex justify-between text-[8px] text-slate-600 font-mono tracking-widest uppercase">
+                            <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest uppercase">
                                 <span>100Hz</span>
                                 <span>(Default: 432Hz)</span>
                                 <span>800Hz</span>
@@ -475,7 +475,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                             <input
                                 type="range" min="0" max="1" step="0.01"
                                 value={binauralVol} onChange={(e) => setBinauralVol(parseFloat(e.target.value))}
-                                className="w-full h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-300"
+                                className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-fuchsia-300"
                             />
                         </div>
                     </div>

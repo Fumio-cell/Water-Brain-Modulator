@@ -10,8 +10,7 @@
   --color-brain-deep: #1e1b4b;
 
   /* Custom Backgrounds */
-  --image-water-grid: linear-gradient(to right, #ffffff05 1px, transparent 1px), 
-                      linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+  --image-water-grid: none;
   
   /* Animations */
   --animate-wave-slow: wave 20s linear infinite;
