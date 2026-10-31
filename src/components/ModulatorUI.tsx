@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Play, Square, UploadCloud, Activity, Waves, Zap, Mic, Download, X } from 'lucide-react';
+import { Play, Square, UploadCloud, Activity, Waves, Mic, Download, X } from 'lucide-react';
 import { ModulationEngine } from '../dsp/engine';
 import { encodeWav } from '../audio/encoder';
 import WaveformPreview from './WaveformPreview';
-
-interface ModulatorUIProps {
-    isPro: boolean;
-}
+import { DEMO_MODE, DEMO_MAX_SECONDS, BUY_URL } from '../config';
 
 const BINAURAL_PRESETS = {
     delta: { label: 'Delta (2.5Hz)', diff: 2.5, desc: 'Deep Sleep & Repair' },
@@ -15,11 +12,13 @@ const BINAURAL_PRESETS = {
     beta: { label: 'Beta (15.0Hz)', diff: 15.0, desc: 'Focus & Alertness' },
 };
 
-export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
+export const ModulatorUI: React.FC = () => {
     const [engine] = useState(() => new ModulationEngine());
     const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
+    const [demoLimited, setDemoLimited] = useState(false);
+    const demoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [volDepth, setVolDepth] = useState(0.3);
     const [panDepth, setPanDepth] = useState(0.4);
     const [flowSpeed, setFlowSpeed] = useState(1.0);
@@ -103,9 +102,23 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
         setIsLoading(false);
     };
 
+    const clearDemoTimer = useCallback(() => {
+        if (demoTimerRef.current !== null) {
+            clearTimeout(demoTimerRef.current);
+            demoTimerRef.current = null;
+        }
+    }, []);
+
+    useEffect(() => clearDemoTimer, [clearDemoTimer]);
+
     const handleDownload = (recordData: { channels: Float32Array[], sampleRate: number }) => {
         try {
-            const blob = encodeWav(recordData.channels, recordData.sampleRate);
+            // The auto-stop timer can overshoot by up to one recorder chunk, so trim to the exact limit.
+            const maxSamples = DEMO_MAX_SECONDS * recordData.sampleRate;
+            const channels = DEMO_MODE
+                ? recordData.channels.map((ch) => ch.subarray(0, maxSamples))
+                : recordData.channels;
+            const blob = encodeWav(channels, recordData.sampleRate);
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -123,6 +136,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
     };
 
     const onPlaybackEnded = useCallback(() => {
+        clearDemoTimer();
         setIsPlaying(prevIsPlaying => {
             if (!prevIsPlaying) return false;
             
@@ -142,11 +156,12 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
             }
             return false;
         });
-    }, [engine, handleDownload]);
+    }, [engine, handleDownload, clearDemoTimer]);
 
     const togglePlay = (recordMode: boolean = false) => {
         if (!audioBuffer) return;
         if (isPlaying) {
+            clearDemoTimer();
             const recordData = engine.stop();
             if (isRecording && recordData) {
                 handleDownload(recordData);
@@ -154,19 +169,29 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
             setIsPlaying(false);
             setIsRecording(false);
         } else {
-            if (recordMode && !isPro) {
-                if (confirm("Recording is a PRO feature. Would you like to upgrade?")) {
-                    window.dispatchEvent(new CustomEvent('app:buyPro'));
-                }
-                return;
-            }
+            setDemoLimited(false);
             engine.play(audioBuffer, volDepth, panDepth, flowSpeed, rippleDepth, recordMode, onPlaybackEnded);
             setIsPlaying(true);
             setIsRecording(recordMode);
+
+            if (recordMode && DEMO_MODE) {
+                demoTimerRef.current = setTimeout(() => {
+                    demoTimerRef.current = null;
+                    const recordData = engine.stop();
+                    if (recordData) {
+                        handleDownload(recordData);
+                    }
+                    setIsPlaying(false);
+                    setIsRecording(false);
+                    setDemoLimited(true);
+                }, DEMO_MAX_SECONDS * 1000);
+            }
         }
     };
 
     const handleClear = () => {
+        clearDemoTimer();
+        setDemoLimited(false);
         if (isPlaying) {
             engine.stop();
             setIsPlaying(false);
@@ -297,12 +322,7 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                                 }`}
                         >
                             {isRecording ? <><Download className="w-3.5 h-3.5" /> Save</> :
-                                <><Mic className="w-3.5 h-3.5" /> Record</>}
-                            {!isPro && !isRecording && (
-                                <div className="absolute -top-2 -right-2 bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded-full shadow-lg flex items-center gap-1 font-semibold">
-                                    <Zap className="w-2 h-2" fill="currentColor" /> PRO
-                                </div>
-                            )}
+                                <><Mic className="w-3.5 h-3.5" /> {DEMO_MODE ? `Record (${DEMO_MAX_SECONDS}s preview)` : 'Record'}</>}
                         </button>
                     </div>
                 </div>
@@ -310,6 +330,14 @@ export const ModulatorUI: React.FC<ModulatorUIProps> = ({ isPro }) => {
                     <span className="truncate pr-4">{isLoading ? 'Loading…' : (fileName || 'No file loaded')}</span>
                     <span className="opacity-60">{isRecording ? 'Recording' : 'Idle'}</span>
                 </div>
+                {DEMO_MODE && demoLimited && (
+                    <p className="demo-notice">
+                        Demo export is limited to {DEMO_MAX_SECONDS} seconds.{' '}
+                        <a href={BUY_URL} target="_blank" rel="noopener noreferrer">
+                            Get the full version
+                        </a>
+                    </p>
+                )}
             </div>
 
             {/* Two-column grid: Liquid Dynamics (left) + Brainwave Entrainment (right) */}

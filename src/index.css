@@ -40,6 +40,24 @@ body {
   flex-direction: column;
 }
 
+.demo-notice {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(255, 208, 138, 0.95);
+  background: rgba(255, 176, 59, 0.1);
+  border: 1px solid rgba(255, 176, 59, 0.4);
+  border-radius: 4px;
+  padding: 0.55rem 0.8rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.demo-notice a {
+  color: #ffd08a;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 /* Custom UI Utils for Water Brain Modulator */
 @layer utilities {
   .glass-panel {
