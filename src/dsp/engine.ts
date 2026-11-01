@@ -1,3 +1,5 @@
+import { decodeAudioFile } from '../lib/audio/decodeAudioFile';
+
 export class ModulationEngine {
     private ctx: AudioContext | null = null;
     private sourceNode: AudioBufferSourceNode | null = null;
@@ -60,7 +62,7 @@ export class ModulationEngine {
     public async loadAudio(file: File): Promise<AudioBuffer> {
         await this.init();
         const arrayBuffer = await file.arrayBuffer();
-        const audioBuffer = await this.ctx!.decodeAudioData(arrayBuffer);
+        const audioBuffer = await decodeAudioFile(this.ctx!, arrayBuffer);
         return audioBuffer;
     }
 

@@ -96,7 +96,7 @@ export const ModulatorUI: React.FC = () => {
             const buffer = await engine.loadAudio(file);
             setAudioBuffer(buffer);
         } catch (err) {
-            alert("Failed to load official audio file.");
+            alert(`Failed to decode audio file (${err instanceof Error ? err.message : String(err)})`);
             console.error(err);
         }
         setIsLoading(false);
@@ -294,7 +294,7 @@ export const ModulatorUI: React.FC = () => {
                                         Drop <span className="text-brain-accent">Ambient / Audio</span> here
                                     </p>
                                 </div>
-                                <input type="file" className="hidden" accept="audio/*" onChange={handleFileUpload} />
+                                <input type="file" className="hidden" accept="audio/*,audio/aiff,audio/x-aiff,.aif,.aiff,.aifc" onChange={handleFileUpload} />
                             </label>
                         )}
                     </div>
